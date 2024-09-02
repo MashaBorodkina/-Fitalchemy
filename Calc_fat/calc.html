@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Body Fat Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cantarella:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-size: 18px;
+            color: white;
+        }
+        input, select, button {
+            display: block;
+            width: 100%;
+            margin-top: 5px;
+            padding: 10px;
+            font-size: 18px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            color: red;
+        }
+        .result {
+            font-size: 22px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .category {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .description {
+            margin-top: 10px;
+            font-size: 20px;
+           color: white;
+        }
+        .white {color: white; }
+        .description span { color: blue; }
+        .expandable {
+            margin-top: 20px;
+        }
+        .expandable .content {
+            display: none;
+            margin-top: 10px;
+        }
+        .expandable.active .content {
+            display: block;
+        }
+        .expandable .title {
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 22px;
+            color: white;
+            text-decoration: underline; /* Подчеркивание заголовков */
+        }
+        .expandable .content ul li {
+            color: white; /* Цвет текста белый */
+            font-size:18px;
+        }
+        .title:hover {
+            color: #007bff; /* Цвет при наведении */
+        }
+        .white-text {
+            color: white;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 18px;
+            color: white;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            color: white;
+        }
+        th {
+            background-color: transparent;
+        }
+        h1 {
+            font-family: 'Cantarella', sans-serif;
+            color: white;
+        }
+        h3 {
+            color: white;
+        }
+        p.intro-text {
+            color: white;
+            font-size: 21px;
+        }
+        .tooltip-container {
+            display: inline-block;
+            position: relative;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+       .tooltip-container .tooltip-icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background-color: white;
+            color: #007bff;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            font-size: 18px;
+            font-weight: bold;
+            border: 2px solid #007bff;
+        }
+        .tooltip-container .tooltip-text {
+            visibility: hidden;
+            width: 280px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -140px;
+            opacity: 0;
+            transition: opacity 0.3s;
+       }
+       .tooltip-container .tooltip-text::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Body Fat Calculator</h1>
+        <p class="intro-text">This calculator helps you determine your body fat percentage based on your weight, height, age, and gender. The body fat percentage norms provided below are based on widely accepted recommendations and studies, which are comparable to estimates calculated using the Deurenberg & Womersley equation.</p>
+
+        <label for="weight">Weight (kg) Enter an integer:</label>
+        <input type="number" id="weight" step="1">
+
+        <label for="height">Height (cm):</label>
+        <input type="number" id="height" step="1">
+
+        <label for="gender">Gender:
+            <span class="tooltip-container">
+                <span class="tooltip-icon">?</span>
+                <span class="tooltip-text">
+                    Please note that this assessment was developed many years ago when the understanding of gender was more limited, and identities other than "Male" and "Female" were not recognized. If you do not identify with a specific gender, you can choose the one that most closely aligns with your physiological characteristics to achieve the most accurate result. Thank you for your understanding.
+                </span>
+            </span>
+        </label>
+        <select id="gender">
+            <option value="">Select an option</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+        </select>
+
+        <label for="age">Age:</label>
+        <input type="number" id="age" min="0">
+
+        <button onclick="calculate()">Calculate</button>
+
+        <div id="result" class="result"></div>
+        <div id="description" class="description"></div>
+
+        <div class="expandable" id="categories" onclick="toggleExpandable(this)">
+            <div class="title white-text">View Body Fat Categories by Age and Gender</div>
+            <div class="content table-container">
+                <h3>Male categories</h3>
+                <table>
+                    <tr><th>Age 20-39</th><td>Athletic: 6-13%, Fitness: 14-17%, Average: 18-24%, Overweight: 25% and above</td></tr>
+                    <tr><th>Age 40-59</th><td>Athletic: 10-15%, Fitness: 16-20%, Average: 21-26%, Overweight: 27% and above</td></tr>
+                    <tr><th>Age 60+</th><td>Athletic: 12-18%, Fitness: 19-23%, Average: 24-29%, Overweight: 30% and above</td></tr>
+                </table>
+                <h3>Female categories</h3>
+                <table>
+                    <tr><th>Age 20-39</th><td>Athletic: 21-24%, Fitness: 25-28%, Average: 29-31%, Overweight: 32% and above</td></tr>
+                    <tr><th>Age 40-59</th><td>Athletic: 23-26%, Fitness: 27-29%, Average: 30-34%, Overweight: 35% and above</td></tr>
+                    <tr><th>Age 60+</th><td>Athletic: 24-28%, Fitness: 29-32%, Average: 33-36%, Overweight: 37% and above</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="expandable" id="descriptionDetail" onclick="toggleExpandable(this)">
+            <div class="title white-text">What do these categories mean?</div>
+            <div class="content">
+                <ul>
+                    <li class="white-text"><strong>Athletic:</strong> Represents a body fat percentage that is commonly found in individuals who engage in regular athletic activities. Indicates high muscle mass and low fat.</span></li>
+                    <li class="white-text"><strong>Fitness:</strong> Corresponds to a slightly higher body fat percentage, typical of individuals who exercise regularly and maintain a healthy diet.</span></li>
+                    <li class="white-text"><strong>Average:</strong> Represents a typical body fat percentage for the general population, indicating a balanced but less active lifestyle.</span></li>
+                    <li class="white-text"><strong>Overweight:</strong> Indicates a body fat percentage that is higher than recommended for maintaining optimal health. May require lifestyle changes to improve health.</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            const weight = parseFloat(document.getElementById('weight').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const gender = document.getElementById('gender').value;
+            const age = parseInt(document.getElementById('age').value);
+
+            let result, category, color;
+
+            if (weight > 0 && height > 0 && age > 0 && gender) {
+                result = calculateBodyFat(weight, height, gender, age);
+
+                if (result !== null) {
+                    [category, color] = categorizeBodyFat(age, result, gender);
+                    
+                    // Clear previous error message and description
+                    document.getElementById('result').innerHTML = `Your body fat percentage is: <span style="color: ${color};">${result.toFixed(2)}%</span> (${category})`;
+
+                    // Set result color
+                    document.getElementById('result').style.color = color;
+                    document.getElementById('description').innerHTML = getDescription(category);
+                } else {
+                    showError('Please ensure all fields are filled out to obtain a result.');
+                }
+            } else {
+                showError('Please ensure all fields are filled out to obtain a result.');
+            }
+        }
+
+        function calculateBodyFat(weight, height, gender, age) {
+            if (gender === 'Male') {
+                return 1.20 * weight / (height / 100) ** 2 + 0.23 * age - 16.2;
+            } else if (gender === 'Female') {
+                return 1.20 * weight / (height / 100) ** 2 + 0.23 * age - 5.4;
+            } else {
+                return null;
+            }
+        }
+
+        function categorizeBodyFat(age, result, gender) {
+            let category = '';
+            let color = '';
+
+            if (gender === 'Male') {
+                if (age >= 20 && age <= 39) {
+                    if (result < 14) { category = 'Athletic'; color = 'white'; }
+                    else if (result < 18) { category = 'Fitness'; color = 'white'; }
+                    else if (result < 25) { category = 'Average'; color = 'white'; }
+                    else { category = 'Overweight'; color = 'white'; }
+                } else if (age >= 40 && age <= 59) {
+                    if (result < 16) { category = 'Athletic'; color = 'white'; }
+                    else if (result < 21) { category = 'Fitness'; color = 'white'; }
+                    else if (result < 27) { category = 'Average'; color = 'white'; }
+                    else { category = 'Overweight'; color = 'white'; }
+                } else if (age >= 60) {
+                    if (result < 18) { category = 'Athletic'; color = 'white'; }
+                    else if (result < 23) { category = 'Fitness'; color = 'white'; }
+                    else if (result < 29) { category = 'Average'; color = 'white'; }
+                    else { category = 'Overweight'; color = 'white'; }
+                }
+            } else if (gender === 'Female') {
+                if (age >= 20 && age <= 39) {
+                    if (result < 25) { category = 'Athletic'; color = 'white'; }
+                    else if (result < 29) { category = 'Fitness'; color = 'white'; }
+                    else if (result < 32) { category = 'Average'; color = 'white'; }
+                    else { category = 'Overweight'; color = 'white'; }
+                } else if (age >= 40 && age <= 59) {
+                    if (result < 27) { category = 'Athletic'; color = 'white'; }
+                    else if (result < 30) { category = 'Fitness'; color = 'white'; }
+                    else if (result < 34) { category = 'Average'; color = 'white'; }
+                    else { category = 'Overweight'; color = 'white'; }
+                } else if (age >= 60) {
+                    if (result < 29) { category = 'Athletic'; color = 'white'; }
+                    else if (result < 32) { category = 'Fitness'; color = 'white'; }
+                    else if (result < 36) { category = 'Average'; color = 'white'; }
+                    else { category = 'Overweight'; color = 'white'; }
+                }
+            }
+
+            return [category, color];
+        }
+
+        function getDescription(category) {
+            switch (category) {
+                case 'Athletic':
+                    return 'This level is typically associated with individuals engaged in high-level sports, either professionally or as a serious hobby. They have a high level of muscle mass and a low body fat percentage. This percentage of body fat ensures optimal physical fitness for maximum athletic performance. However, maintaining such a low level of fat requires regular training and a strict diet.<br><br>' +
+                '<strong>Advantages:</strong> High performance, improved overall physical condition, lower risk of chronic diseases.<br><br>' +
+                '<strong>Disadvantages:</strong> Can be difficult to maintain long-term without strict control over diet and training.<br><br>' +
+                'It is important to remember that this is only an approximate estimate. For more accurate measurements and health assessments, it is recommended to use additional methods, such as bioimpedance analysis or DEXA scanning, and to consider individual physiological characteristics.';
+                case 'Fitness':
+                    return 'This level is characteristic of people who regularly engage in sports or fitness activities but are not at a professional level. They also have a low body fat percentage, but slightly higher than athletes. This is a healthy range that indicates good physical fitness and absence of excess weight.<br><br>' +
+        '<strong>Advantages:</strong> Maintaining good physical fitness, reducing the risk of chronic diseases, accessible to a wider range of people.<br><br>' +
+        '<strong>Disadvantages:</strong> May require regular physical activity and healthy eating to maintain.<br><br>' +
+        'It is important to remember that this is only an approximate estimate. For more accurate measurements and health assessments, it is recommended to use additional methods, such as bioimpedance analysis or DEXA scanning, and to consider individual physiological characteristics.';
+                case 'Average':
+                    return 'This range characterizes the average physical condition, where a moderate amount of fat is present. This is the most common range among people leading a relatively active lifestyle but not engaged in intensive training. Fat levels in this range are considered normal for health.<br><br>' +
+        '<strong>Advantages:</strong> Moderate risk of chronic diseases, a typical level for many people.<br><br>' +
+        '<strong>Disadvantages:</strong> May indicate a need to increase physical activity to improve health and fitness.<br><br>' +
+        'It is important to remember that this is only an approximate estimate. For more accurate measurements and health assessments, it is recommended to use additional ethods, such as bioimpedance analysis or DEXA scanning, and to consider individual physiological characteristics.';
+                case 'Overweight':
+                    return 'A body fat percentage in this range indicates the presence of excess weight, which may lead to an increased risk of various diseases, such as cardiovascular diseases, type 2 diabetes, and other chronic conditions. People with this level of body fat are recommended to consult a specialist to adjust their lifestyle and diet.<br><br>' +
+        '<strong>Advantages:</strong> No obvious benefits, but it is a signal that action is needed to improve health.<br><br>' +
+        '<strong>Disadvantages:</strong> Increased risk of cardiovascular diseases, diabetes, hypertension, and other obesity-related conditions.<br><br>' +
+        'It is important to remember that this is only an approximate estimate. For more accurate measurements and health assessments, it is recommended to use additional methods, such as bioimpedance analysis or DEXA scanning, and to consider individual physiological characteristics.';
+                default:
+                    return '';
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('result').innerHTML = `<span class="error">${message}</span>`;
+            // Clear description if there is an error
+            document.getElementById('description').innerHTML = '';
+        }
+
+        function toggleExpandable(element) {
+            element.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
