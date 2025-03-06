@@ -1,1 +1,51 @@
+***Тестовая документация для проекта
+Этот репозиторий содержит тестовую документацию для анализа производительности сайта fitalchemy.me. Включает отчеты о тестировании, рекомендации по оптимизации и результаты анализа с использованием Google PageSpeed Insights.
 
+Содержание
+Обзор тестирования
+Цели тестирования
+Используемые инструменты и методы
+Результаты тестирования
+Рейтинг производительности для мобильных и десктопных версий
+Ключевые метрики
+Выявленные проблемы и рекомендации
+Оптимизация изображений
+Минимизация JavaScript и CSS
+Оптимизация пути рендеринга
+Улучшение работы сервера
+Заключение
+Рекомендации по улучшению
+Как использовать
+Ознакомьтесь с отчетами тестирования по производительности для мобильных и десктопных версий.
+Примените рекомендованные действия для улучшения производительности сайта:
+Использование WebP для изображений
+Включение lazy-loading для изображений
+Оптимизация кеширования и сжатия данных
+Выполните повторное тестирование после внесения изменений.
+
+
+
+Test Documentation for Project
+This repository contains the test documentation for performance analysis of the website fitalchemy.me. It includes test reports, optimization recommendations, and performance analysis results using Google PageSpeed Insights.
+
+Contents
+Testing Overview
+Testing goals
+Tools and methods used
+Testing Results
+Performance score for mobile and desktop versions
+Key metrics
+Identified Issues and Recommendations
+Image optimization
+Minimizing JavaScript and CSS
+Render path optimization
+Server performance improvements
+Conclusion
+Recommendations for improvements
+How to use
+Review the performance testing reports for both mobile and desktop versions.
+Implement the recommended actions to improve website performance:
+Use WebP format for images
+Enable lazy-loading for images
+Optimize caching and data compression
+Perform retesting after applying the changes.
